@@ -1,7 +1,7 @@
 const Api = "https://hotelbooking.stepprojects.ge/";
 const API_hotels = Api + "api/Hotels/GetAll";
 const API_rooms = Api + "api/Rooms/GetAll";
-const API_roomsFilter = Api + "api/Rooms/GetFilltered";
+const API_roomsFilter = Api + "api/Rooms/GetFiltered";
 const API_bookings = Api + "api/Booking";
 const API_deleteBooking = Api + "api/Booking/{bookingId}";
 
@@ -93,6 +93,10 @@ async function getRooms() {
     renderTopExpensiveRooms(data, 3);
     // Render first three into rooms list
     renderFirstRooms(data, 3);
+    // If on rooms page, render all rooms
+    if (document.getElementById("rooms-list")) {
+      renderAllRooms(data);
+    }
   } catch (error) {
     console.error("Error fetching rooms:", error);
     try {
@@ -103,9 +107,53 @@ async function getRooms() {
       console.log("rooms via proxy:", data2);
       renderTopExpensiveRooms(data2, 3);
       renderFirstRooms(data2, 3);
+      if (document.getElementById("rooms-list")) {
+        renderAllRooms(data2);
+      }
       return;
     } catch (err2) {
-      console.error("Proxy fetch for rooms failed:", err2);
+      console.error("Proxy fetch for rooms failed, using fallback:", err2);
+      // Local fallback sample data so UI shows rooms during API/proxy downtime
+      const sampleRooms = [
+        {
+          id: 101,
+          name: "Standart Double",
+          hotelName: "Sample Hotel A",
+          featuredImage: "https://via.placeholder.com/600x400?text=Room+1",
+          price: 120,
+          guests: 2,
+        },
+        {
+          id: 102,
+          name: "Deluxe Suite",
+          hotelName: "Sample Hotel B",
+          featuredImage: "https://via.placeholder.com/600x400?text=Room+2",
+          price: 240,
+          guests: 4,
+        },
+        {
+          id: 103,
+          name: "Single Room",
+          hotelName: "Sample Hotel C",
+          featuredImage: "https://via.placeholder.com/600x400?text=Room+3",
+          price: 80,
+          guests: 1,
+        },
+        {
+          id: 104,
+          name: "Family Room",
+          hotelName: "Sample Hotel D",
+          featuredImage: "https://via.placeholder.com/600x400?text=Room+4",
+          price: 180,
+          guests: 4,
+        },
+      ];
+      console.log("Using sample rooms fallback");
+      renderTopExpensiveRooms(sampleRooms, 3);
+      renderFirstRooms(sampleRooms, 3);
+      if (document.getElementById("rooms-list")) {
+        renderAllRooms(sampleRooms);
+      }
     }
   }
 }
@@ -262,7 +310,66 @@ function renderFirstRooms(rooms, count) {
   });
 }
 
-// call getRooms on load as well
+function renderAllRooms(rooms) {
+  if (!Array.isArray(rooms)) return;
+  const container = document.getElementById("rooms-list");
+  if (!container) return;
+  container.innerHTML = "";
+  rooms.forEach((room) => {
+    const article = document.createElement("article");
+    article.className = "card";
+
+    const img = document.createElement("img");
+    img.src =
+      room.featuredImage ||
+      room.image ||
+      room.imageUrl ||
+      (room.images && room.images[0]?.source) ||
+      "";
+    img.alt = room.name || room.title || "Room image";
+
+    const body = document.createElement("div");
+    body.className = "card-body";
+
+    const h3 = document.createElement("h3");
+    h3.textContent = room.name || room.title || "Unnamed Room";
+
+    const meta = document.createElement("p");
+    meta.className = "meta";
+    const parts = [];
+    const hotelLabel = room.hotelName || room.hotel || room.address || "";
+    if (hotelLabel) parts.push(hotelLabel);
+    const guests = getRoomGuests(room);
+    if (guests) parts.push(`სტუმრები: ${guests}`);
+    const price = getRoomPrice(room);
+    if (price) parts.push(`${price}₾`);
+    meta.textContent = parts.join(" • ");
+
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+    const view = document.createElement("a");
+    view.className = "btn";
+    view.href = `#`;
+    view.textContent = "View";
+    const book = document.createElement("a");
+    book.className = "btn btn-primary";
+    book.href = `booking.html?roomId=${room.id || ""}`;
+    book.textContent = "Book";
+    actions.appendChild(view);
+    actions.appendChild(book);
+
+    body.appendChild(h3);
+    body.appendChild(meta);
+    body.appendChild(actions);
+
+    article.appendChild(img);
+    article.appendChild(body);
+    container.appendChild(article);
+  });
+}
+
+// call getRooms on load
 document.addEventListener("DOMContentLoaded", () => {
+  getHotels();
   getRooms();
 });
