@@ -1,17 +1,211 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Booking hotel</title>
-</head>
-<body>
-    
-<div id="rooms">
+<!doctype html>
+<html lang="ka">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HotelBook - საუკეთესო სასტუმროები საქართველოში</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" type="image" href="favicon.png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="logo" href="index.html">HotelBook</a>
+        <nav class="main-nav">
+          <a href="index.html" class="active">მთავარი</a>
+          <a href="hotels.html">სასტუმროები</a>
+          <a href="rooms.html">ოთახები</a>
+          <a href="booked.html">დაჯავშნილი</a>
+        </nav>
+      </div>
+    </header>
 
-</div>
+    <section class="hero hero-resort">
+      <div class="hero-overlay"></div>
+      <div class="container hero-inner">
+        <div class="hero-left">
+          <h1>შენი იდეალური დასვენება აქ იწყება</h1>
+          <p class="lead">
+            დაჯავშნე მარტივად, იმოგზაურე მშვიდად და ისიამოვნე კომფორტით, რომელიც
+            დაგამახსოვრდება.
+          </p>
+          <ul class="hero-features">
+            <li>ადვილად დაჯავშნა</li>
+            <li>საუკეთესო ფასები</li>
+            <li>მომხმარებელთა მხარდაჭერა 24/7</li>
+          </ul>
+        </div>
+        <aside class="booking-card">
+          <form id="search-form" class="booking-form">
+            <h4>შეაფასე ხელმისაწვდომობა</h4>
+            <label>ქალაქი</label>
+            <input id="city" name="city" placeholder="თბილისი" />
+            <div class="two-col">
+              <div>
+                <label>Check-in</label>
+                <input id="checkin" name="checkin" type="date" />
+              </div>
+              <div>
+                <label>Check-out</label>
+                <input id="checkout" name="checkout" type="date" />
+              </div>
+            </div>
+            <label>სტუმრები</label>
+            <select id="guests" name="guests">
+              <option value="1">1</option>
+              <option value="2" selected>2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+            <div class="form-actions">
+              <button id="search-btn" class="btn btn-primary">ძიება</button>
+            </div>
+          </form>
+        </aside>
+      </div>
+    </section>
+
+    <section id="featured" class="featured">
+      <h2>ფავორიტი შეთავაზებები</h2>
+      <p class="muted">
+        ჩვე ვირჩევთ საუკეთესო სასტუმროებს და ოთახებს, რომ მოგაწოდოთ კომფორტული
+        და ხელმისაწვდომი დასვენების გამოცდილება.
+      </p>
+      <div class="hotels-grid" id="featured-grid">
+        <article class="hotel-card">
+          <img />
+          <div class="body">
+            <h4></h4>
+            <p class="meta"></p>
+            <div class="hotel-actions">
+              <a class="btn" href="#">გაიგე მეტი</a
+              ><a class="btn btn-primary" href="booking.html">დაჯავშნა</a>
+            </div>
+          </div>
+        </article>
+        <article class="hotel-card">
+          <img />
+          <div class="body">
+            <h4></h4>
+            <p class="meta"></p>
+            <div class="hotel-actions">
+              <a class="btn" href="#">გაიგე მეტი</a
+              ><a class="btn btn-primary" href="booking.html">დაჯავშნა</a>
+            </div>
+          </div>
+        </article>
+        <article class="hotel-card">
+          <img />
+          <div class="body">
+            <h4></h4>
+            <p class="meta"></p>
+            <div class="hotel-actions">
+              <a class="btn" href="#">გაიგე მეტი</a
+              ><a class="btn btn-primary" href="booking.html">დაჯავშნა</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="hotels" class="popular-cities">
+      <h2>პოპულარული ქალაქები</h2>
+      <div class="city-list">
+        <button class="city">თბილისი</button>
+        <button class="city">ბათუმი</button>
+        <button class="city">ქუთაისი</button>
+      </div>
+    </section>
+
+    <section class="how-it-works">
+      <h2>როგორ მუშაობს</h2>
+      <div class="steps">
+        <div class="step">
+          <strong>1.</strong>
+          <p>აირჩიე ქალაქი და თარიღები</p>
+        </div>
+        <div class="step">
+          <strong>2.</strong>
+          <p>გაფილტრე ტიპით და ფასით</p>
+        </div>
+        <div class="step">
+          <strong>3.</strong>
+          <p>დაჯავშნე და მიიღე დადასტურება</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="favorites">
+      <h2>ოთახების სია</h2>
+      <div class="cards-grid">
+        <article class="card">
+          <img />
+          <div class="card-body">
+            <h3></h3>
+            <p class="meta"></p>
+            <div class="card-actions">
+              <a class="btn" href="#">View</a>
+              <a class="btn btn-primary" href="booking.html">Book</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <img />
+          <div class="card-body">
+            <h3></h3>
+            <p class="meta"></p>
+            <div class="card-actions">
+              <a class="btn" href="#">View</a>
+              <a class="btn btn-primary" href="booking.html">Book</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <img />
+          <div class="card-body">
+            <h3></h3>
+            <p class="meta"></p>
+            <div class="card-actions">
+              <a class="btn" href="#">View</a>
+              <a class="btn btn-primary" href="booking.html">Book</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="testimonials">
+      <h2>მომხმარებელთა გამოხმაურება</h2>
+      <div class="test-grid">
+        <blockquote>
+          "საუკეთესო მომსახურება და მარტივი დაჯავშნა" — ანა
+        </blockquote>
+        <blockquote>"სწრაფი პასუხი და მეგობრული პერსონალი" — გიორგი</blockquote>
+      </div>
+    </section>
+
+    <section class="newsletter">
+      <h3>გამოხმაურების დამატება</h3>
+      <form id="newsletter">
+        <input placeholder="ელ.ფოსტა" type="email" />
+        <button class="btn btn-primary">დამატება</button>
+      </form>
+    </section>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>© 2026 HotelBook — სტუდენტური პროექტი - ლიკა საბაშვილი</p>
+      </div>
+    </footer>
 
     <script src="app.js"></script>
-</body>
+  </body>
 </html>
