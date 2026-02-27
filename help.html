@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ka">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HotelBook - საუკეთესო სასტუმროები საქართველოში</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" type="image" href="favicon.png" />
+    <link rel="stylesheet" href="chatbotstyle.css" />
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="logo" href="index.html">HotelBook</a>
+        <nav class="main-nav">
+          <a href="index.html" class="active">მთავარი</a>
+          <a href="hotels.html">სასტუმროები</a>
+          <a href="rooms.html">ოთახები</a>
+          <a href="booked.html">დაჯავშნილი</a>
+          <a href="help.html">დახმარება</a>
+        </nav>
+      </div>
+    </header>
+    <div class="chat-container">
+      <!-- ჰედერი -->
+      <div class="chat-header">
+        <span class="logo">✨</span>
+        <div>
+          <h1>Gemini ჩატბოტი</h1>
+          <p>Google Gemini AI — უფასო API დემო</p>
+        </div>
+      </div>
+
+      <!-- API Key -->
+      <div class="api-key-section">
+        <label>🔑 API Key:</label>
+        <input
+          type="password"
+          id="apiKey"
+          placeholder="ჩასვით თქვენი Gemini API key აქ..."
+        />
+      </div>
+
+      <!-- მესიჯები -->
+      <div class="chat-messages" id="chatMessages">
+        <div class="welcome">
+          <div class="emoji">🤖</div>
+          <p>დაწერეთ რამე და Gemini გიპასუხებთ!</p>
+          <p style="margin-top: 12px; font-size: 12px">
+            ჯერ ჩასვით API Key ზემოთ
+          </p>
+        </div>
+      </div>
+
+      <!-- ინფუთი -->
+      <div class="chat-input">
+        <input
+          type="text"
+          id="userInput"
+          placeholder="დაწერეთ შეტყობინება..."
+          autocomplete="off"
+        />
+        <button id="sendBtn" onclick="sendMessage()">გაგზავნა ➤</button>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>© 2026 HotelBook — სტუდენტური პროექტი - ლიკა საბაშვილი</p>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script src="chatbot.js"></script>
+  </body>
+</html>

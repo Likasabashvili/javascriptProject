@@ -1,0 +1,254 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+}
+
+.chat-container {
+  width: 100%;
+  max-width: 700px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* ჰედერი */
+.chat-header {
+  background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570);
+  padding: 20px 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-header .logo {
+  font-size: 28px;
+}
+
+.chat-header h1 {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.chat-header p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+}
+
+/* API Key შეყვანა */
+.api-key-section {
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.api-key-section input {
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.api-key-section input:focus {
+  border-color: #4285f4;
+}
+
+.api-key-section label {
+  color: #aaa;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* მესიჯების ზონა */
+.chat-messages {
+  height: 450px;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.message {
+  max-width: 80%;
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #4285f4, #5e97f6);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message.bot {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e0e0e0;
+  border-bottom-left-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.message.bot .label {
+  font-size: 11px;
+  color: #9b72cb;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.message.error {
+  align-self: center;
+  background: rgba(255, 59, 48, 0.15);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 59, 48, 0.2);
+  font-size: 13px;
+}
+
+/* ტიპინგ ანიმაცია */
+.typing-indicator {
+  display: flex;
+  gap: 5px;
+  padding: 15px 20px;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background: #9b72cb;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+
+/* ინფუთ ზონა */
+.chat-input {
+  padding: 15px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.chat-input input:focus {
+  border-color: #4285f4;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.chat-input button {
+  padding: 14px 24px;
+  border-radius: 25px;
+  border: none;
+  background: linear-gradient(135deg, #4285f4, #9b72cb);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.chat-input button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(66, 133, 244, 0.4);
+}
+
+.chat-input button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Welcome მესიჯი */
+.welcome {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 120px;
+}
+
+.welcome .emoji {
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+
+.welcome p {
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/* 🤖 */
