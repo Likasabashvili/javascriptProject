@@ -14,23 +14,33 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header class="site-header">
-      <div class="container header-inner">
-        <a class="logo" href="index.html">HotelBook</a>
-        <nav class="main-nav">
-          <a href="index.html" class="active">მთავარი</a>
-          <a href="hotels.html">სასტუმროები</a>
-          <a href="rooms.html">ოთახები</a>
-          <a href="booked.html">დაჯავშნილი</a>
-           <a href="help.html">დახმარება</a>
-        </nav>
-      </div>
-    </header>
-
+   <header class="site-header">
+  <div class="flex">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">HotelBook</a>
+      <nav class="main-nav">
+        <a href="index.html">მთავარი</a>
+        <a href="hotels.html">სასტუმროები</a>
+        <a href="rooms.html">ოთახები</a>
+        <a href="booked.html">დაჯავშნილი</a>
+        <a href="help.html">დახმარება</a>
+      </nav>
+    </div>
+    <div class="autorization" id="auth-buttons">
+      <a href="login.html" class="btn">შესვლა</a>
+      <a href="register.html" class="btn btn-primary">რეგისტრაცია</a>
+    </div>
+    <div class="welcome" id="welcome-header" style="display:none;">
+      <span id="welcome-name"></span>
+      <button id="logout-btn" class="btn logout">გასვლა</button>
+    </div>
+  </div>
+</header>
     <footer class="site-footer">
       <div class="container">
         <p>© 2026 HotelBook — სტუდენტური პროექტი - ლიკა საბაშვილი</p>
       </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>
 </html>

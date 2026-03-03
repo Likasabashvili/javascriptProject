@@ -1,0 +1,80 @@
+/* მხოლოდ ავტორიზაციის სექცია ვასთილებთ */
+.auth-section {
+  min-height: calc(100vh - 160px); /* header + footer space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  background: linear-gradient(135deg, #0b69ff, #0848c8);
+}
+
+/* კონტეინერი */
+.auth-section .container {
+  background: #fff;
+  padding: 40px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ფორმა */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.auth-form input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: #0b69ff;
+  box-shadow: 0 0 0 2px rgba(11, 105, 255, 0.2);
+}
+
+/* ღილაკი */
+.auth-section .btn {
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* გასვლა */
+.logout {
+  background: #ff4d4d;
+}
+
+.logout:hover {
+  background: #cc0000;
+}
+
+/* ტექსტი */
+.switch-text {
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.switch-text a {
+  color: #0b69ff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.switch-text a:hover {
+  text-decoration: underline;
+}
+
+/* დამალვა */
+.hidden {
+  display: none;
+}

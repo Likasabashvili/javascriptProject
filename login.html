@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ka">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,9 +12,10 @@
     />
     <link rel="shortcut icon" type="image" href="favicon.png" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="auth.css" />
   </head>
   <body>
-   <header class="site-header">
+<header class="site-header">
   <div class="flex">
     <div class="container header-inner">
       <a class="logo" href="index.html">HotelBook</a>
@@ -36,50 +37,45 @@
     </div>
   </div>
 </header>
-    <div class="filter-container">
-      <h2>ოთახის ძიება</h2>
 
-      <div class="filters">
-        <!-- Price -->
-        <div class="filter-group">
-          <label>მაქს. ფასი (₾)</label>
-          <input type="number" id="priceFilter" placeholder="მაგ: 300" />
+    <section class="auth-section">
+      <div class="container">
+        <!-- Login Form -->
+        <div id="login-box">
+          <h2>შესვლა</h2>
+          <form id="login-form" class="auth-form">
+            <input type="email" id="email" placeholder="ელ. ფოსტა" required />
+            <input
+              type="password"
+              id="password"
+              placeholder="პაროლი"
+              required
+            />
+            <button type="submit" class="btn">შესვლა</button>
+          </form>
+
+          <p class="switch-text">
+            არ გაქვს ანგარიში?
+            <a href="register.html">რეგისტრაცია</a>
+          </p>
         </div>
 
-        <!-- Dates -->
-        <div class="filter-group">
-          <label>Check-in</label>
-          <input type="date" id="checkIn" />
+        <!-- Welcome Block -->
+        <div id="welcome-box" class="hidden">
+          <h3>მოგესალმები, <span id="user-name"></span> 👋</h3>
+          <button id="logout-btn" class="btn logout">გასვლა</button>
         </div>
-
-        <div class="filter-group">
-          <label>Check-out</label>
-          <input type="date" id="checkOut" />
-        </div>
-
-        <!-- Guests -->
-        <div class="filter-group">
-          <label>სტუმრები</label>
-          <select id="guestFilter">
-            <option value="">ყველა</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4+</option>
-          </select>
-        </div>
-
-        <button class="search-btn">ძიება</button>
-        <button class="reset-btn">გასუფთავება</button>
       </div>
-    </div>
+    </section>
 
     <footer class="site-footer">
       <div class="container">
         <p>© 2026 HotelBook — სტუდენტური პროექტი - ლიკა საბაშვილი</p>
       </div>
     </footer>
+
+    <script src="app.js"></script>
+    <script src="login.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
   </body>
 </html>
