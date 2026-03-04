@@ -38,12 +38,11 @@ body {
   z-index: 30;
   border-bottom: 1px solid rgba(10, 14, 20, 0.04);
   width: 100%;
-  
 }
 .header-inner {
   display: flex;
   align-items: center;
- gap: 100px;
+  gap: 100px;
   padding: 16px 24px;
 }
 .logo {
@@ -81,6 +80,13 @@ body {
 }
 
 /* მთავარი */
+.city-select {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #dbe2ef;
+  background: white;
+  font-size: 14px;
+}
 .hero-resort {
   position: relative;
   background-image: url("https://gisellelifestylemagazine.wordpress.com/wp-content/uploads/2018/07/img_1801.jpg");

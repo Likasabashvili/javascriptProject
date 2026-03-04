@@ -13,6 +13,7 @@
     <link rel="shortcut icon" type="image" href="favicon.png" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="auth.css" />
+    <link rel="stylesheet" href="booked.css" />
   </head>
   <body>
     <header class="site-header">
@@ -27,9 +28,38 @@
             <a href="help.html">დახმარება</a>
           </nav>
         </div>
+        <div class="autorization" id="auth-buttons">
+          <a href="login.html" class="btn">შესვლა</a>
+          <a href="register.html" class="btn btn-primary">რეგისტრაცია</a>
+        </div>
+        <div class="welcome" id="welcome-header" style="display: none">
+          <span id="welcome-name"></span>
+          <button id="logout-btn" class="btn logout">გასვლა</button>
+        </div>
       </div>
     </header>
-
+    <div class="container">
+      <h2>დაჯავშნილი ოთახები</h2>
+      <table id="bookedTable">
+        <thead>
+          <tr>
+            <th>სასტუმრო</th>
+            <th>ოთახი</th>
+            <th>ფოტო</th>
+            <th>სახელი</th>
+            <th>ტელეფონი</th>
+            <th>Check-in</th>
+            <th>Check-out</th>
+            <th>ჯამური ფასი (₾)</th>
+            <th>სტატუსი</th>
+            <th>მოქმედება</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- დაჯავშნილი ოთახები ჩაეტანება JS-ით -->
+        </tbody>
+      </table>
+    </div>
     <footer class="site-footer">
       <div class="container">
         <p>© 2026 HotelBook — სტუდენტური პროექტი - ლიკა საბაშვილი</p>
@@ -37,5 +67,6 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="app.js"></script>
+    <script src="booked.js"></script>
   </body>
 </html>
