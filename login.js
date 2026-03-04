@@ -1,40 +1,36 @@
+
 const loginForm = document.getElementById("login-form");
-const loginBox = document.getElementById("login-box");
-const welcomeBox = document.getElementById("welcome-box");
-const userNameSpan = document.getElementById("user-name");
-const logoutBtn = document.getElementById("logout-btn");
-//შესვლა
+
 loginForm.addEventListener("submit", function (e) {
   e.preventDefault();
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
   const storedUser = JSON.parse(localStorage.getItem("user"));
-  if (
-    storedUser &&
-    email === storedUser.email &&
-    password === storedUser.password
-  ) {
-    localStorage.setItem("loggedIn", "true");
-    localStorage.setItem("loggedUserName", storedUser.name);
-    showWelcome();
+
+  if (!storedUser) {
+    Swal.fire("შეცდომა", "მომხმარებელი არ არსებობს", "error");
+    return;
+  }
+
+  if (email === storedUser.email && password === storedUser.password) {
+    
+    // 👉 ვქმნით აქტიურ სესიას
+    localStorage.setItem("currentUser", JSON.stringify(storedUser));
+
+    Swal.fire({
+      title: "წარმატებით შეხვედით",
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false
+    });
+
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 1500);
+
   } else {
-    alert("ელ. ფოსტა ან პაროლი არასწორია!");
+    Swal.fire("შეცდომა", "ელ. ფოსტა ან პაროლი არასწორია", "error");
   }
-}); // Welcome ჩვენება
-function showWelcome() {
-  loginBox.classList.add("hidden");
-  welcomeBox.classList.remove("hidden");
-  const name = localStorage.getItem("loggedUserName");
-  userNameSpan.textContent = name;
-} // გასვლა
-logoutBtn.addEventListener("click", function () {
-  localStorage.removeItem("loggedIn");
-  localStorage.removeItem("loggedUserName");
-  welcomeBox.classList.add("hidden");
-  loginBox.classList.remove("hidden");
-}); // თუ უკვე შესულია (რეფრეშისას)
-window.onload = function () {
-  if (localStorage.getItem("loggedIn") === "true") {
-    showWelcome();
-  }
-};
+});

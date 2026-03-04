@@ -15,56 +15,43 @@
     <link rel="stylesheet" href="auth.css" />
   </head>
   <body>
-<header class="site-header">
-  <div class="flex">
-    <div class="container header-inner">
-      <a class="logo" href="index.html">HotelBook</a>
-      <nav class="main-nav">
-        <a href="index.html">მთავარი</a>
-        <a href="hotels.html">სასტუმროები</a>
-        <a href="rooms.html">ოთახები</a>
-        <a href="booked.html">დაჯავშნილი</a>
-        <a href="help.html">დახმარება</a>
-      </nav>
-    </div>
-    <div class="autorization" id="auth-buttons">
-      <a href="login.html" class="btn">შესვლა</a>
-      <a href="register.html" class="btn btn-primary">რეგისტრაცია</a>
-    </div>
-    <div class="welcome" id="welcome-header" style="display:none;">
-      <span id="welcome-name"></span>
-      <button id="logout-btn" class="btn logout">გასვლა</button>
-    </div>
-  </div>
-</header>
+    <header class="site-header">
+      <div class="flex">
+        <div class="container header-inner">
+          <a class="logo" href="index.html">HotelBook</a>
+          <nav class="main-nav">
+            <a href="index.html">მთავარი</a>
+            <a href="hotels.html">სასტუმროები</a>
+            <a href="rooms.html">ოთახები</a>
+            <a href="booked.html">დაჯავშნილი</a>
+            <a href="help.html">დახმარება</a>
+          </nav>
+        </div>
+        <div class="autorization" id="auth-buttons">
+          <a href="login.html" class="btn">შესვლა</a>
+          <a href="register.html" class="btn btn-primary">რეგისტრაცია</a>
+        </div>
+        <div class="welcome" id="welcome-header" style="display: none">
+          <span id="welcome-name"></span>
+          <button id="logout-btn" class="btn logout">გასვლა</button>
+        </div>
+      </div>
+    </header>
 
     <section class="auth-section">
       <div class="container">
-        <!-- Login Form -->
-        <div id="login-box">
-          <h2>შესვლა</h2>
-          <form id="login-form" class="auth-form">
-            <input type="email" id="email" placeholder="ელ. ფოსტა" required />
-            <input
-              type="password"
-              id="password"
-              placeholder="პაროლი"
-              required
-            />
-            <button type="submit" class="btn">შესვლა</button>
-          </form>
+        <h2>შესვლა</h2>
 
-          <p class="switch-text">
-            არ გაქვს ანგარიში?
-            <a href="register.html">რეგისტრაცია</a>
-          </p>
-        </div>
+        <form id="login-form" class="auth-form">
+          <input type="email" id="email" placeholder="ელ. ფოსტა" required />
+          <input type="password" id="password" placeholder="პაროლი" required />
+          <button type="submit" class="btn btn-primary">შესვლა</button>
+        </form>
 
-        <!-- Welcome Block -->
-        <div id="welcome-box" class="hidden">
-          <h3>მოგესალმები, <span id="user-name"></span> 👋</h3>
-          <button id="logout-btn" class="btn logout">გასვლა</button>
-        </div>
+        <p class="switch-text">
+          არ გაქვს ანგარიში?
+          <a href="register.html">რეგისტრაცია</a>
+        </p>
       </div>
     </section>
 

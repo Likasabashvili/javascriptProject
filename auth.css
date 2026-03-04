@@ -1,66 +1,79 @@
-/* მხოლოდ ავტორიზაციის სექცია ვასთილებთ */
+/* Background */
 .auth-section {
-  min-height: calc(100vh - 160px); /* header + footer space */
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 60px 20px;
-  background: linear-gradient(135deg, #0b69ff, #0848c8);
+  justify-content: center;
+  background: linear-gradient(135deg, #0b69ff, #6a11cb);
+  padding: 20px;
 }
 
-/* კონტეინერი */
+/* Card */
 .auth-section .container {
-  background: #fff;
+  background: #ffffff;
   padding: 40px;
-  border-radius: 16px;
+  border-radius: 18px;
   width: 100%;
-  max-width: 380px;
+  max-width: 400px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   text-align: center;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.6s ease-in-out;
 }
 
-/* ფორმა */
+/* Title */
+.auth-section h2 {
+  margin-bottom: 25px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  color: #222;
+}
+
+/* Form */
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 20px;
+  gap: 15px;
 }
 
+/* Inputs */
 .auth-form input {
   padding: 12px 14px;
   border-radius: 10px;
   border: 1px solid #ddd;
-  font-family: "Inter", sans-serif;
   font-size: 14px;
-  transition: 0.2s;
+  transition: all 0.3s ease;
 }
 
 .auth-form input:focus {
-  outline: none;
   border-color: #0b69ff;
-  box-shadow: 0 0 0 2px rgba(11, 105, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(11, 105, 255, 0.15);
+  outline: none;
 }
 
-/* ღილაკი */
-.auth-section .btn {
+/* Button */
+.btn {
   padding: 12px;
   border-radius: 10px;
+  border: none;
+  cursor: pointer;
   font-weight: 600;
+  transition: all 0.3s ease;
 }
 
-/* გასვლა */
-.logout {
-  background: #ff4d4d;
+.btn-primary {
+  background: #0b69ff;
+  color: white;
 }
 
-.logout:hover {
-  background: #cc0000;
+.btn-primary:hover {
+  background: #0848c8;
+  transform: translateY(-2px);
 }
 
-/* ტექსტი */
+/* Switch text */
 .switch-text {
-  margin-top: 18px;
+  margin-top: 20px;
   font-size: 14px;
 }
 
@@ -73,8 +86,21 @@
 .switch-text a:hover {
   text-decoration: underline;
 }
+#welcome-name {
+  margin-top: 15px;
+  font-weight: 600;
+  margin-right: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-/* დამალვა */
-.hidden {
-  display: none;
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
