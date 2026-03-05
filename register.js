@@ -51,7 +51,15 @@ form.addEventListener("submit", async function (e) {
       body: JSON.stringify(registerData),
     });
 
-    const data = await response.json();
+    let data;
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json();
+    } else {
+      const text = await response.text();
+      data = { message: text };
+    }
 
     if (response.ok) {
       Swal.fire({
@@ -67,11 +75,13 @@ form.addEventListener("submit", async function (e) {
       Swal.close();
       const errorMsg = data.message || data.title || "რეგისტრაცია ვერ შესრულდა";
       showMessage(errorMsg, "error");
+      Swal.fire("შეცდომა", errorMsg, "error");
     }
   } catch (error) {
     Swal.close();
     showMessage("შეცდომა: " + error.message, "error");
     console.error("Registration error:", error);
+    Swal.fire("შეცდომა", error.message, "error");
   }
 });
 

@@ -8,8 +8,8 @@ const messageDiv = document.getElementById("loginMessage");
 loginForm.addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  const phoneNumber = document.getElementById("loginPhone").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
+  const phoneNumber = document.getElementById("phoneNumber").value.trim();
+  const password = document.getElementById("password").value.trim();
 
   if (!phoneNumber || !password) {
     Swal.fire("შეცდომა", "შეავსეთ ყველა ველი", "warning");

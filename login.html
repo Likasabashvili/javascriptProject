@@ -48,9 +48,15 @@
         <h2>შესვლა</h2>
 
         <form id="login-form" class="auth-form">
-          <input type="email" id="email" placeholder="ელ. ფოსტა" required />
+          <input
+            type="tel"
+            id="phoneNumber"
+            placeholder="ტელეფონის ნომერი"
+            required
+          />
           <input type="password" id="password" placeholder="პაროლი" required />
           <button type="submit" class="btn btn-primary">შესვლა</button>
+          <div id="loginMessage" class="auth-message"></div>
         </form>
 
         <p class="switch-text">
