@@ -26,17 +26,6 @@
             <span></span>
           </button>
           <nav class="main-nav" id="main-nav">
-            <script>
-              document.addEventListener("DOMContentLoaded", () => {
-                const burger = document.getElementById("burger-btn");
-                const nav = document.getElementById("main-nav");
-                if (burger && nav) {
-                  burger.addEventListener("click", () => {
-                    nav.classList.toggle("active");
-                  });
-                }
-              });
-            </script>
             <a href="index.html">მთავარი</a>
             <a href="hotels.html">სასტუმროები</a>
             <a href="rooms.html">ოთახები</a>
@@ -56,12 +45,22 @@
     </header>
     <div class="container">
       <h2>დაჯავშნილი ოთახები</h2>
-      <table id="bookedTable">
+
+      <div class="phone-search-box">
+        <label for="phoneInput"
+          >შეიყვანეთ ტელეფონის ნომერი თქვენი ჯავშნების სანახავად:</label
+        >
+        <div class="phone-search-row">
+          <input type="text" id="phoneInput" placeholder="მაგ: 555000000" />
+          <button id="searchBtn" class="btn btn-primary">ძებნა</button>
+        </div>
+      </div>
+
+      <table id="bookedTable" style="display: none">
         <thead>
           <tr>
             <th>სასტუმრო</th>
             <th>ოთახი</th>
-            <th>ფოტო</th>
             <th>სახელი</th>
             <th>ტელეფონი</th>
             <th>Check-in</th>

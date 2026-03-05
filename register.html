@@ -19,23 +19,7 @@
       <div class="flex">
         <div class="container header-inner">
           <a class="logo" href="index.html">HotelBook</a>
-          <button class="burger" id="burger-btn">
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-          <nav class="main-nav" id="main-nav">
-            <script>
-              document.addEventListener("DOMContentLoaded", () => {
-                const burger = document.getElementById("burger-btn");
-                const nav = document.getElementById("main-nav");
-                if (burger && nav) {
-                  burger.addEventListener("click", () => {
-                    nav.classList.toggle("active");
-                  });
-                }
-              });
-            </script>
+          <nav class="main-nav">
             <a href="index.html">მთავარი</a>
             <a href="hotels.html">სასტუმროები</a>
             <a href="rooms.html">ოთახები</a>
@@ -59,10 +43,28 @@
         <h2>რეგისტრაცია</h2>
 
         <form id="register-form" class="auth-form">
-          <input type="text" id="name" placeholder="სახელი" required />
+          <input type="text" id="firstName" placeholder="სახელი" required />
+          <input type="text" id="lastName" placeholder="გვარი" required />
+          <input
+            type="tel"
+            id="phoneNumber"
+            placeholder="ტელეფონის ნომერი"
+            required
+          />
           <input type="email" id="email" placeholder="ელ. ფოსტა" required />
-          <input type="password" id="password" placeholder="პაროლი" required />
+          <input
+            type="password"
+            id="password"
+            placeholder="პაროლი (მინიმუმ 6 სიმბოლო)"
+            required
+            minlength="6"
+          />
+          <select id="role" class="auth-select">
+            <option value="User">მომხმარებელი</option>
+            <option value="Admin">ადმინისტრატორი</option>
+          </select>
           <button type="submit" class="btn btn-primary">დარეგისტრირება</button>
+          <div id="registerMessage" class="auth-message"></div>
         </form>
 
         <p class="switch-text">

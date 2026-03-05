@@ -1,302 +1,294 @@
-const API_URL = "https://hotelbooking.stepprojects.ge/api";
-
-// HTML ელემენტები
-const priceFilter = document.getElementById("priceFilter");
-const checkInInput = document.getElementById("checkIn");
-const checkOutInput = document.getElementById("checkOut");
-const guestFilter = document.getElementById("guestFilter");
-const searchBtn = document.querySelector(".search-btn");
-const resetBtn = document.querySelector(".reset-btn");
-const roomsContainer = document.getElementById("roomsContainer");
-
-let allRooms = [];
-
-// document load
 document.addEventListener("DOMContentLoaded", () => {
-  fetchAllRooms();
-});
+  const API_URL = "https://hotelbooking.stepprojects.ge/api";
+  const CACHE_TTL = 10 * 60 * 1000; // 10 წუთი
+  const params = new URLSearchParams(window.location.search);
+  const hotelIdFromUrl = params.get("hotelId"); // 👈 სასტუმროს id URL-დან
 
-// ყველა ოთახის ჩამოტვირთვა - API-დან პირდაპირ
-async function fetchAllRooms() {
-  try {
-    if (!roomsContainer) {
-      console.error("roomsContainer ელემენტი ვერ მოიძებნა!");
-      return;
-    }
+  // HTML ელემენტები
+  const priceFilter = document.getElementById("priceFilter");
+  const checkInInput = document.getElementById("checkIn");
+  const checkOutInput = document.getElementById("checkOut");
+  const guestFilter = document.getElementById("guestFilter");
+  const searchBtn = document.querySelector(".search-btn");
+  const resetBtn = document.querySelector(".reset-btn");
+  const roomsContainer = document.getElementById("roomsContainer");
 
-    roomsContainer.innerHTML = "<p>ოთახების ჩამოტვირთვა...</p>";
-    console.log("ოთახების ჩამოტვირთვის დაწყება...");
+  function formatDateToISO(dateStr) {
+    if (!dateStr) return new Date().toISOString();
+    const [year, month, day] = dateStr.split("-");
+    const date = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+    return date.toISOString();
+  }
 
-    // პირველი, ვიღებთ ყველა სასტუმროს რათა შევიცნოთ მათი ID-ები
-    const hotelsRes = await fetch(`${API_URL}/Hotels/GetAll`);
-    if (!hotelsRes.ok)
-      throw new Error("სერვერის შეცდომა სასტუმროების ჩამოტვირთვისას");
-
-    const hotels = await hotelsRes.json();
-    console.log("სასტუმროები ჩამოტვირთულია:", hotels.length);
-
-    // თითოეული სასტუმროსთვის ვიღებთ ოთახებს /Rooms/GetRoom/{hotelId} endpoint-დან
-    allRooms = [];
-
-    for (const hotel of hotels) {
-      try {
-        console.log(
-          `ვიღებთ ოთახებს სასტუმროსთვის: ${hotel.name} (ID: ${hotel.id})`,
-        );
-        const roomsRes = await fetch(`${API_URL}/Rooms/GetRoom/${hotel.id}`);
-        console.log(`Request URL: ${API_URL}/Rooms/GetRoom/${hotel.id}`);
-        console.log(`Response status: ${roomsRes.status}`);
-
-        if (roomsRes.ok) {
-          const rooms = await roomsRes.json();
-          console.log(`${hotel.name}-ისთვის ნედლი პასუხი:`, rooms);
-          console.log(`პასუხის ტიპი:`, typeof rooms);
-          console.log(`არის array?`, Array.isArray(rooms));
-
-          // თუ პასუხი არის ერთი ობიექტი (არა array), მაშინ შეში მისი array-ში
-          let roomsArray = Array.isArray(rooms) ? rooms : [rooms];
-
-          console.log(`დამუშავებული rooms array:`, roomsArray);
-          console.log(`rooms რაოდენობა:`, roomsArray.length);
-
-          // თითოეულ ოთახს დავამატებთ სასტუმროს ინფორმაციას
-          if (roomsArray.length > 0) {
-            console.log(`${hotel.name}-ში სულ ${roomsArray.length} ოთახი`);
-            roomsArray.forEach((room, index) => {
-              console.log(`დამუშავება ოთახი ${index + 1}:`, room.name, room.id);
-              room.hotelName = hotel.name;
-              room.hotelId = hotel.id;
-              room.hotelCity = hotel.city;
-              allRooms.push(room);
-            });
-          } else {
-            console.log(`${hotel.name}-ში ოთახები არ არის`);
-          }
-        } else {
-          console.warn(
-            `სასტუმროსთვის ${hotel.name} (ID: ${hotel.id}) ოთახები ვერ მოიძებნა, სტატუსი: ${roomsRes.status}`,
-          );
-          const errorText = await roomsRes.text();
-          console.warn(`შეცდომის დეტალები:`, errorText);
-        }
-      } catch (err) {
-        console.error(`ოთახები ვერ მოტვირთა სასტუმროსთვის: ${hotel.name}`, err);
+  // 🔧 localStorage ქეშირების დამხმარეები
+  function getCache(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const { data, timestamp } = JSON.parse(raw);
+      if (Date.now() - timestamp > CACHE_TTL) {
+        localStorage.removeItem(key);
+        return null;
       }
+      return data;
+    } catch (e) {
+      return null;
     }
+  }
 
-    console.log("სულ ოთახი ჩამოტვირთულია:", allRooms.length);
-
-    if (allRooms.length === 0) {
-      roomsContainer.innerHTML = "<p>ოთახები ვერ მოიძებნა.</p>";
-      return;
-    }
-
-    // URL-დან ქალაქის ფილტრი აღნიშვავთ თუ არის
-    const params = new URLSearchParams(window.location.search);
-    const cityFilter = params.get("city");
-
-    if (cityFilter) {
-      const filtered = allRooms.filter((room) =>
-        room.hotelCity?.toLowerCase().includes(cityFilter.toLowerCase()),
+  function setCache(key, data) {
+    try {
+      localStorage.setItem(
+        key,
+        JSON.stringify({ data, timestamp: Date.now() }),
       );
-      displayRooms(filtered);
-    } else {
-      displayRooms(allRooms);
-    }
-  } catch (err) {
-    console.error("მთავარი შეცდომა:", err);
-    roomsContainer.innerHTML = `<p>შეცდომა: ${err.message}</p>`;
-  }
-}
-
-// ოთახების ფილტრი
-function filterRooms() {
-  let filtered = [...allRooms];
-
-  // ფასის ფილტრი
-  if (priceFilter.value) {
-    const maxPrice = parseFloat(priceFilter.value);
-    filtered = filtered.filter((room) => room.pricePerNight <= maxPrice);
-  }
-
-  // სტუმრების რაოდენობა
-  if (guestFilter.value) {
-    const guests = parseInt(guestFilter.value);
-    if (guests === 4) {
-      filtered = filtered.filter((room) => room.maximumGuests >= 4);
-    } else {
-      filtered = filtered.filter((room) => room.maximumGuests >= guests);
+    } catch (e) {
+      console.warn("localStorage შენახვა ვერ მოხერხდა:", e);
     }
   }
 
-  // Check-in და Check-out თარიღები
-  if (checkInInput.value && checkOutInput.value) {
-    const checkInDate = new Date(checkInInput.value);
-    const checkOutDate = new Date(checkOutInput.value);
+  // 🔥 ყველა ოთახის წამოღება (localStorage ქეშით)
+  async function fetchAllRooms() {
+    const cached = getCache("all_rooms");
+    if (cached) return cached;
 
-    filtered = filtered.filter((room) => {
-      if (!room.bookedDates || room.bookedDates.length === 0) {
-        return true;
+    try {
+      // სასტუმროების სია — ჯერ ქეშიდან
+      let hotels = getCache("hotels_all");
+      if (!hotels) {
+        const hotelsRes = await fetch(`${API_URL}/Hotels/GetAll`);
+        if (!hotelsRes.ok)
+          throw new Error("სასტუმროების წამოღება ვერ მოხერხდა");
+        hotels = await hotelsRes.json();
+        setCache("hotels_all", hotels);
       }
 
-      // შემოწმება თუ მოთხოვნილი თარიღი დაკმაყოფილებულია
-      for (let bookedDate of room.bookedDates) {
-        const booked = new Date(bookedDate.date);
-        if (booked >= checkInDate && booked < checkOutDate) {
-          return false;
+      const hotelDetails = await Promise.all(
+        hotels.map((h) => {
+          const hCache = getCache("hotel_" + h.id);
+          if (hCache) return Promise.resolve(hCache);
+          return fetch(`${API_URL}/Hotels/GetHotel/${h.id}`)
+            .then((r) => r.json())
+            .then((hotel) => {
+              setCache("hotel_" + hotel.id, hotel);
+              return hotel;
+            });
+        }),
+      );
+
+      let allRooms = [];
+      hotelDetails.forEach((hotel) => {
+        if (hotel.rooms && hotel.rooms.length) {
+          allRooms = allRooms.concat(hotel.rooms);
+        }
+      });
+
+      setCache("all_rooms", allRooms);
+      return allRooms;
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  }
+
+  // 🔥 ოთახების წამოღება (hotelId მხარდაჭერით, localStorage ქეშით)
+  async function fetchRooms(filters = null) {
+    roomsContainer.innerHTML = "<p>იტვირთება...</p>";
+
+    try {
+      let rooms;
+
+      if (hotelIdFromUrl) {
+        // კონკრეტული სასტუმროს ოთახები — ქეშით
+        const cacheKey = "hotel_" + hotelIdFromUrl;
+        let hotel = getCache(cacheKey);
+        if (!hotel) {
+          const res = await fetch(
+            `${API_URL}/Hotels/GetHotel/${hotelIdFromUrl}`,
+          );
+          if (!res.ok) throw new Error("სერვერის შეცდომა: " + res.status);
+          hotel = await res.json();
+          setCache(cacheKey, hotel);
+        }
+        rooms = hotel.rooms || [];
+      } else {
+        // ყველა სასტუმროს ოთახები
+        rooms = await fetchAllRooms();
+      }
+
+      // ✅ ფილტრაცია კლიენტის მხარეს (თუ ფილტრებია მითითებული)
+      if (filters) {
+        if (filters.priceTo > 0) {
+          rooms = rooms.filter((r) => r.pricePerNight <= filters.priceTo);
+        }
+        if (filters.maximumGuests > 0) {
+          rooms = rooms.filter((r) => r.maximumGuests >= filters.maximumGuests);
         }
       }
-      return true;
+
+      if (!rooms.length) {
+        roomsContainer.innerHTML = "<p>ოთახები ვერ მოიძებნა.</p>";
+        return;
+      }
+
+      displayRooms(rooms);
+    } catch (err) {
+      roomsContainer.innerHTML = `<p>შეცდომა: ${err.message}</p>`;
+      console.error(err);
+    }
+  }
+
+  function displayRooms(rooms) {
+    roomsContainer.innerHTML = "";
+
+    rooms.forEach((room) => {
+      const roomCard = document.createElement("div");
+      roomCard.classList.add("room-card");
+
+      const imgSrc = room.images?.[0]?.source || "";
+
+      roomCard.innerHTML = `
+        <img src="${imgSrc}" alt="${room.name}" />
+        <h3>${room.name}</h3>
+        <p>ფასი: ${room.pricePerNight} ₾ / ღამე</p>
+        <p>მაქს. სტუმრები: ${room.maximumGuests}</p>
+        <button class="book-btn" data-room-id="${room.id}" data-price="${room.pricePerNight}">
+          დაჯავშნა
+        </button>
+      `;
+
+      roomsContainer.appendChild(roomCard);
+    });
+
+    document.querySelectorAll(".book-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const roomId = parseInt(btn.dataset.roomId);
+        const roomPrice = parseFloat(btn.dataset.price);
+
+        // SweetAlert2 ფორმით ყველა საჭირო ველის შეკრება
+        const { value: formValues } = await Swal.fire({
+          title: "დაჯავშნა",
+          html:
+            '<input id="swal-name" class="swal2-input" placeholder="თქვენი სახელი">' +
+            '<input id="swal-phone" class="swal2-input" placeholder="ტელეფონი">' +
+            '<label style="display:block;margin-top:10px;font-size:14px;">Check-in</label>' +
+            '<input id="swal-checkin" type="date" class="swal2-input">' +
+            '<label style="display:block;margin-top:10px;font-size:14px;">Check-out</label>' +
+            '<input id="swal-checkout" type="date" class="swal2-input">',
+          focusConfirm: false,
+          showCancelButton: true,
+          confirmButtonText: "დაჯავშნა",
+          cancelButtonText: "გაუქმება",
+          preConfirm: () => {
+            const name = document.getElementById("swal-name").value.trim();
+            const phone = document.getElementById("swal-phone").value.trim();
+            const checkIn = document.getElementById("swal-checkin").value;
+            const checkOut = document.getElementById("swal-checkout").value;
+
+            if (!name || !phone || !checkIn || !checkOut) {
+              Swal.showValidationMessage("გთხოვთ შეავსოთ ყველა ველი");
+              return false;
+            }
+
+            const checkInDate = new Date(checkIn);
+            const checkOutDate = new Date(checkOut);
+            const nights = (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
+
+            if (nights <= 0) {
+              Swal.showValidationMessage(
+                "Check-out უნდა იყოს Check-in-ზე გვიან",
+              );
+              return false;
+            }
+
+            return { name, phone, checkIn, checkOut, nights };
+          },
+        });
+
+        if (!formValues) return; // მომხმარებელმა გააუქმა
+
+        const {
+          name: customerName,
+          phone: customerPhone,
+          checkIn,
+          checkOut,
+          nights,
+        } = formValues;
+        const totalPrice = roomPrice * nights;
+
+        try {
+          // ⏳ ლოდინის ანიმაცია
+          Swal.fire({
+            title: "გთხოვთ მოიცადოთ...",
+            text: "მიმდინარეობს დაჯავშნა",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+
+          const res = await fetch(`${API_URL}/Booking`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              roomID: roomId,
+              checkInDate: formatDateToISO(checkIn),
+              checkOutDate: formatDateToISO(checkOut),
+              totalPrice,
+              isConfirmed: true,
+              customerName,
+              customerId: "12345",
+              customerPhone,
+            }),
+          });
+
+          if (!res.ok) throw new Error("დაჯავშნა ვერ შესრულდა: " + res.status);
+
+          const text = await res.text();
+
+          // სერვერი აბრუნებს: "Booking retrieved successfully. Booking Id 15548"
+          const idMatch = text.match(/(\d+)/);
+          if (idMatch) {
+            const savedBookings =
+              JSON.parse(localStorage.getItem("myBookings")) || [];
+            savedBookings.push(parseInt(idMatch[1]));
+            localStorage.setItem("myBookings", JSON.stringify(savedBookings));
+          }
+
+          Swal.fire(
+            "წარმატება",
+            `ოთახი წარმატებით დაიჯავშნა!\nჯამური ფასი: ${totalPrice} ₾`,
+            "success",
+          );
+        } catch (err) {
+          Swal.fire("შეცდომა", err.message, "error");
+        }
+      });
     });
   }
 
-  return filtered;
-}
+  searchBtn.addEventListener("click", (e) => {
+    e.preventDefault();
 
-// ოთახების ჩვენება
-function displayRooms(rooms) {
-  roomsContainer.innerHTML = "";
+    const filters = {
+      priceTo: priceFilter.value ? parseFloat(priceFilter.value) : 0,
+      maximumGuests: guestFilter.value ? parseInt(guestFilter.value) : 0,
+    };
 
-  if (rooms.length === 0) {
-    roomsContainer.innerHTML = "<p>ოთახები ვერ მოიძებნა.</p>";
-    return;
-  }
-
-  rooms.forEach((room) => {
-    const roomCard = document.createElement("div");
-    roomCard.classList.add("room-card");
-
-    const imgSrc =
-      room.images && room.images.length > 0
-        ? room.images[0].source
-        : "https://picsum.photos/300/200";
-
-    roomCard.innerHTML = `
-      <img src="${imgSrc}" alt="${room.name}" />
-      <div class="room-card-body">
-        <h3>${room.name}</h3>
-        <p class="hotel-name">${room.hotelName || "სასტუმრო"}</p>
-        <p class="price">ფასი: ${room.pricePerNight} ₾ / ღამე</p>
-        <p class="guests">მაქს. სტუმრები: ${room.maximumGuests}</p>
-        <a href="booking.html?roomId=${room.id}" class="btn btn-primary booking-btn">დაჯავშნა</a>
-      </div>
-    `;
-    roomsContainer.appendChild(roomCard);
+    fetchRooms(filters);
   });
-}
 
-// მოვლენების რეგისტრაცია
-searchBtn.addEventListener("click", () => {
-  const filtered = filterRooms();
-  displayRooms(filtered);
-});
-
-resetBtn.addEventListener("click", () => {
-  priceFilter.value = "";
-  checkInInput.value = "";
-  checkOutInput.value = "";
-  guestFilter.value = "";
-  displayRooms(allRooms);
-});
-
-// ოთახების ფილტრი
-function filterRooms() {
-  let filtered = [...allRooms];
-
-  // ფასის ფილტრი
-  if (priceFilter.value) {
-    const maxPrice = parseFloat(priceFilter.value);
-    filtered = filtered.filter((room) => room.pricePerNight <= maxPrice);
-  }
-
-  // სტუმრების რაოდენობა
-  if (guestFilter.value) {
-    const guests = parseInt(guestFilter.value);
-    if (guests === 4) {
-      filtered = filtered.filter((room) => room.maximumGuests >= 4);
-    } else {
-      filtered = filtered.filter((room) => room.maximumGuests >= guests);
-    }
-  }
-
-  // Check-in და Check-out თარიღები
-  if (checkInInput.value && checkOutInput.value) {
-    const checkInDate = new Date(checkInInput.value);
-    const checkOutDate = new Date(checkOutInput.value);
-
-    filtered = filtered.filter((room) => {
-      if (!room.bookedDates || room.bookedDates.length === 0) {
-        return true;
-      }
-
-      // შემოწმება თუ მოთხოვნილი თარიღი დაკმაყოფილებულია
-      for (let bookedDate of room.bookedDates) {
-        const booked = new Date(bookedDate.date);
-        if (booked >= checkInDate && booked < checkOutDate) {
-          return false;
-        }
-      }
-      return true;
-    });
-  }
-
-  return filtered;
-}
-
-// ოთახების ჩვენება
-function displayRooms(rooms) {
-  roomsContainer.innerHTML = "";
-
-  if (rooms.length === 0) {
-    roomsContainer.innerHTML = "<p>ოთახები ვერ მოიძებნა.</p>";
-    return;
-  }
-
-  rooms.forEach((room) => {
-    const roomCard = document.createElement("div");
-    roomCard.classList.add("room-card");
-
-    const imgSrc =
-      room.images && room.images.length > 0
-        ? room.images[0].source
-        : "https://picsum.photos/300/200";
-
-    roomCard.innerHTML = `
-      <img src="${imgSrc}" alt="${room.name}" />
-      <div class="room-card-body">
-        <h3>${room.name}</h3>
-        <p class="hotel-name">${room.hotelName || "სასტუმრო"}</p>
-        <p class="price">ფასი: ${room.pricePerNight} ₾ / ღამე</p>
-        <p class="guests">მაქს. სტუმრები: ${room.maximumGuests}</p>
-        <a href="booking.html?roomId=${room.id}" class="btn btn-primary booking-btn">დაჯავშნა</a>
-      </div>
-    `;
-    roomsContainer.appendChild(roomCard);
-  });
-}
-
-// მოვლენების რეგისტრაცია
-if (searchBtn) {
-  console.log("✓ Search button found");
-  searchBtn.addEventListener("click", () => {
-    console.log("🔍 Search button clicked");
-    const filtered = filterRooms();
-    displayRooms(filtered);
-  });
-} else {
-  console.warn("⚠️ Search button not found");
-}
-
-if (resetBtn) {
-  console.log("✓ Reset button found");
-  resetBtn.addEventListener("click", () => {
-    console.log("↻ Reset button clicked");
+  resetBtn.addEventListener("click", (e) => {
+    e.preventDefault();
     priceFilter.value = "";
     checkInInput.value = "";
     checkOutInput.value = "";
     guestFilter.value = "";
-    displayRooms(allRooms);
+    fetchRooms();
   });
-} else {
-  console.warn("⚠️ Reset button not found");
-}
+
+  // 🔥 პირველად ჩატვირთვისას
+  fetchRooms();
+});

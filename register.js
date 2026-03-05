@@ -1,21 +1,18 @@
-console.log("📝 register.js loaded");
-
+const AUTH_API = "https://rentcar.stepprojects.ge/api/Users";
 const form = document.getElementById("register-form");
+const messageDiv = document.getElementById("registerMessage");
 
-form.addEventListener("submit", function (e) {
+form.addEventListener("submit", async function (e) {
   e.preventDefault();
-  console.log("📝 Registration form submitted");
 
-  const name = document.getElementById("name").value.trim();
+  const firstName = document.getElementById("firstName").value.trim();
+  const lastName = document.getElementById("lastName").value.trim();
+  const phoneNumber = document.getElementById("phoneNumber").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
+  const role = document.getElementById("role").value;
 
-  console.log(
-    `Input: name="${name}", email="${email}", password="${password}"`,
-  );
-
-  if (!name || !email || !password) {
-    console.warn("⚠️ Some fields are empty");
+  if (!firstName || !lastName || !phoneNumber || !email || !password) {
     Swal.fire({
       title: "შეავსე ყველა ველი",
       icon: "warning",
@@ -23,19 +20,62 @@ form.addEventListener("submit", function (e) {
     return;
   }
 
-  const user = { name, email, password };
-  console.log("✓ User object created:", user);
+  if (password.length < 6) {
+    Swal.fire({
+      title: "პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო",
+      icon: "warning",
+    });
+    return;
+  }
 
-  localStorage.setItem("user", JSON.stringify(user));
-  console.log("✓ User saved to localStorage under key: 'user'");
+  const registerData = {
+    phoneNumber,
+    email,
+    firstName,
+    lastName,
+    password,
+    role,
+  };
 
+  // Loading
   Swal.fire({
-    title: "რეგისტრაცია წარმატებულია",
-    icon: "success",
-    timer: 1500,
-    showConfirmButton: false,
-  }).then(() => {
-    console.log("🔄 Redirecting to login.html");
-    window.location.href = "login.html";
+    title: "რეგისტრაცია...",
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading(),
   });
+
+  try {
+    const response = await fetch(`${AUTH_API}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(registerData),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      Swal.fire({
+        title: "რეგისტრაცია წარმატებულია!",
+        text: "ახლა შეგიძლიათ შეხვიდეთ სისტემაში",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      }).then(() => {
+        window.location.href = "login.html";
+      });
+    } else {
+      Swal.close();
+      const errorMsg = data.message || data.title || "რეგისტრაცია ვერ შესრულდა";
+      showMessage(errorMsg, "error");
+    }
+  } catch (error) {
+    Swal.close();
+    showMessage("შეცდომა: " + error.message, "error");
+    console.error("Registration error:", error);
+  }
 });
+
+function showMessage(text, type) {
+  messageDiv.textContent = text;
+  messageDiv.className = `auth-message ${type}`;
+}

@@ -38,6 +38,7 @@ body {
   z-index: 30;
   border-bottom: 1px solid rgba(10, 14, 20, 0.04);
   width: 100%;
+  background: #fff;
 }
 .header-inner {
   display: flex;
@@ -77,6 +78,15 @@ body {
 .autorization {
   margin-top: 10px;
   gap: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.autorization .btn {
+  padding: 8px 12px;
+  white-space: nowrap;
+  font-size: 0.9rem;
 }
 /* ბურგერ მენიუ */
 /* Burger Button */
@@ -87,13 +97,28 @@ body {
   background: none;
   border: none;
   cursor: pointer;
+  padding: 8px;
+  z-index: 101;
 }
 
 .burger span {
   width: 25px;
   height: 3px;
   background: #000;
-  transition: 0.3s;
+  transition: 0.3s ease;
+  border-radius: 2px;
+}
+
+.burger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.burger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(8px, -8px);
 }
 
 /* Responsive */
@@ -103,19 +128,27 @@ body {
   }
 
   .main-nav {
-    position: absolute;
+    position: fixed;
     top: 70px;
     right: 0;
+    left: 0;
     background: white;
-    width: 220px;
+    width: 100%;
     flex-direction: column;
     padding: 20px;
     display: none;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    border-bottom: 1px solid #eef4ff;
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
   }
 
   .main-nav a {
-    margin-bottom: 15px;
+    padding: 14px 10px;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(11, 105, 255, 0.1);
   }
 
   .main-nav.active {
@@ -629,6 +662,7 @@ button.city {
   gap: 15px;
   flex-wrap: wrap;
   align-items: flex-end;
+  margin-bottom: 20px;
 }
 
 .filter-group {
@@ -694,6 +728,7 @@ button {
   .header-inner {
     gap: 20px;
     padding: 12px 16px;
+    justify-content: space-between;
   }
 
   .logo {
@@ -708,6 +743,10 @@ button {
   .flex {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .burger {
+    order: 2;
   }
 }
 
@@ -1072,10 +1111,24 @@ button {
   display: block;
 }
 
-/* Very Small Screens */
+/* Very Small Screens 480px */
 @media (max-width: 480px) {
   .header-inner {
-    gap: 10px;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .logo {
+    font-size: 1rem;
+  }
+
+  .burger {
+    padding: 6px;
+  }
+
+  .burger span {
+    width: 20px;
+    height: 2.5px;
   }
 
   .hero-left h1 {
@@ -1130,5 +1183,140 @@ button {
 
   table img {
     width: 50px;
+  }
+}
+
+/* Extra Small Screens 400px and below */
+@media (max-width: 400px) {
+  .site-header {
+    padding: 0;
+  }
+
+  .header-inner {
+    gap: 6px;
+    padding: 8px 10px;
+  }
+
+  .logo {
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .burger {
+    padding: 4px;
+  }
+
+  .burger span {
+    width: 18px;
+    height: 2px;
+  }
+
+  .main-nav {
+    top: 60px;
+    padding: 12px 15px;
+  }
+
+  .main-nav a {
+    padding: 10px 8px;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 1.1rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  h3 {
+    font-size: 0.95rem;
+  }
+
+  body {
+    font-size: 12px;
+  }
+
+  .btn {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+
+  .btn-primary {
+    padding: 8px 12px;
+  }
+
+  table {
+    font-size: 11px;
+  }
+
+  table th,
+  table td {
+    padding: 4px 2px;
+  }
+
+  table img {
+    width: 40px;
+  }
+
+  .card-body h3 {
+    font-size: 0.9rem;
+  }
+
+  .card .meta {
+    font-size: 0.75rem;
+  }
+
+  .filter-container {
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+
+  .filters {
+    gap: 6px;
+  }
+
+  .booking-form {
+    padding: 12px;
+  }
+
+  .booking-form h4 {
+    font-size: 0.95rem;
+  }
+
+  .booking-form input,
+  .booking-form select {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .hero-left h1 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .lead {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+
+  .newsletter {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .newsletter input {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .site-footer {
+    padding: 16px 10px;
+    font-size: 0.75rem;
   }
 }

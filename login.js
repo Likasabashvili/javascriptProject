@@ -1,53 +1,108 @@
-console.log("🔐 login.js loaded");
+const AUTH_API = "https://rentcar.stepprojects.ge/api/Users";
+const TOKEN_KEY = "authToken";
+const USER_KEY = "currentUser";
 
 const loginForm = document.getElementById("login-form");
+const messageDiv = document.getElementById("loginMessage");
 
-loginForm.addEventListener("submit", function (e) {
+loginForm.addEventListener("submit", async function (e) {
   e.preventDefault();
-  console.log("🔐 Login form submitted");
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const phoneNumber = document.getElementById("loginPhone").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
 
-  console.log(
-    `Attempting login with: email="${email}", password="${password}"`,
-  );
-
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  console.log("✓ Retrieved stored user from localStorage:", storedUser);
-
-  if (!storedUser) {
-    console.warn("❌ No user found in localStorage");
-    Swal.fire("შეცდომა", "მომხმარებელი არ არსებობს", "error");
+  if (!phoneNumber || !password) {
+    Swal.fire("შეცდომა", "შეავსეთ ყველა ველი", "warning");
     return;
   }
 
-  console.log(`Stored user: email="${storedUser.email}"`);
-  console.log(`Checking credentials: ${email} === ${storedUser.email}`);
+  // Loading
+  Swal.fire({
+    title: "შესვლა...",
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading(),
+  });
 
-  if (email === storedUser.email && password === storedUser.password) {
-    console.log("✓ Credentials match!");
-
-    // 👉 Creating active session
-    localStorage.setItem("currentUser", JSON.stringify(storedUser));
-    console.log("✓ currentUser saved to localStorage:", storedUser);
-    console.log("✓ User name:", storedUser.name);
-
-    Swal.fire({
-      title: "წარმატებით შეხვედით",
-      icon: "success",
-      timer: 1500,
-      showConfirmButton: false,
+  try {
+    const response = await fetch(`${AUTH_API}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phoneNumber, password }),
     });
 
-    setTimeout(() => {
-      console.log("🔄 Redirecting to index.html");
-      window.location.href = "index.html";
-    }, 1500);
-  } else {
-    console.warn("❌ Credentials do not match");
-    console.warn(`Email match: ${email === storedUser.email}`);
-    console.warn(`Password match: ${password === storedUser.password}`);
-    Swal.fire("შეცდომა", "ელ. ფოსტა ან პაროლი არასწორია", "error");
+    if (response.ok) {
+      // login-ის რესპონსი შეიძლება ტექსტი იყოს (token) ან JSON
+      let userData;
+      const contentType = response.headers.get("content-type");
+
+      if (contentType && contentType.includes("application/json")) {
+        userData = await response.json();
+      } else {
+        const text = await response.text();
+        // token ან სხვა ტექსტური პასუხი
+        userData = { token: text, phoneNumber };
+      }
+
+      // შევინახოთ token და user info
+      localStorage.setItem(TOKEN_KEY, userData.token || phoneNumber);
+
+      // მომხმარებლის ინფო - თუ სერვერმა არ დააბრუნა, მოვითხოვოთ
+      let userInfo = {
+        phoneNumber: userData.phoneNumber || phoneNumber,
+        email: userData.email || "",
+        firstName: userData.firstName || "",
+        lastName: userData.lastName || "",
+        role: userData.role || "User",
+      };
+
+      // თუ firstName ცარიელია, ვცადოთ GET /api/Users/{phoneNumber}
+      if (!userInfo.firstName) {
+        try {
+          const userRes = await fetch(`${AUTH_API}/${phoneNumber}`);
+          if (userRes.ok) {
+            const fullUser = await userRes.json();
+            userInfo.firstName = fullUser.firstName || "";
+            userInfo.lastName = fullUser.lastName || "";
+            userInfo.email = fullUser.email || "";
+            userInfo.role = fullUser.role || "User";
+          }
+        } catch (e) {
+          // ignore - use what we have
+        }
+      }
+
+      localStorage.setItem(USER_KEY, JSON.stringify(userInfo));
+
+      Swal.fire({
+        title: "წარმატებით შეხვედით!",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+    } else {
+      Swal.close();
+      let errorMsg = "ტელეფონის ნომერი ან პაროლი არასწორია";
+      try {
+        const errData = await response.json();
+        errorMsg = errData.message || errData.title || errorMsg;
+      } catch (e) {
+        // use default message
+      }
+      showMessage(errorMsg, "error");
+      Swal.fire("შეცდომა", errorMsg, "error");
+    }
+  } catch (error) {
+    Swal.close();
+    showMessage("შეცდომა: " + error.message, "error");
+    console.error("Login error:", error);
   }
 });
+
+function showMessage(text, type) {
+  messageDiv.textContent = text;
+  messageDiv.className = `auth-message ${type}`;
+}

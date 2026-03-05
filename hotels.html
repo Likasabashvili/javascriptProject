@@ -31,20 +31,6 @@
             <a href="booked.html">დაჯავშნილი</a>
             <a href="help.html">დახმარება</a>
           </nav>
-          <script>
-            // ბურგერ მენიუ - ელემენტები ნაშთია დაიმედიდეს
-            document.addEventListener("DOMContentLoaded", () => {
-              const burger = document.getElementById("burger-btn");
-              const nav = document.getElementById("main-nav");
-
-              if (burger && nav) {
-                burger.addEventListener("click", () => {
-                  console.log("🔘 Burger menu clicked");
-                  nav.classList.toggle("active");
-                });
-              }
-            });
-          </script>
         </div>
         <div class="autorization" id="auth-buttons">
           <a href="login.html" class="btn">შესვლა</a>
