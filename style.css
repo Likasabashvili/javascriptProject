@@ -43,7 +43,7 @@ body {
 .header-inner {
   display: flex;
   align-items: center;
-  gap: 50px;
+  gap: 40px;
   padding: 16px 24px;
 }
 .logo {
