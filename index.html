@@ -12,31 +12,48 @@
     />
     <link rel="shortcut icon" type="image" href="favicon.png" />
     <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="auth.css" />
   </head>
   <body>
-   <header class="site-header">
-  <div class="flex">
-    <div class="container header-inner">
-      <a class="logo" href="index.html">HotelBook</a>
-      <nav class="main-nav">
-        <a href="index.html">მთავარი</a>
-        <a href="hotels.html">სასტუმროები</a>
-        <a href="rooms.html">ოთახები</a>
-        <a href="booked.html">დაჯავშნილი</a>
-        <a href="help.html">დახმარება</a>
-      </nav>
-    </div>
-    <div class="autorization" id="auth-buttons">
-      <a href="login.html" class="btn">შესვლა</a>
-      <a href="register.html" class="btn btn-primary">რეგისტრაცია</a>
-    </div>
-    <div class="welcome" id="welcome-header" style="display:none;">
-      <span id="welcome-name"></span>
-      <button id="logout-btn" class="btn logout">გასვლა</button>
-    </div>
-  </div>
-</header>
+    <header class="site-header">
+      <div class="flex">
+        <div class="container header-inner">
+          <a class="logo" href="index.html">HotelBook</a>
+          <button class="burger" id="burger-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <nav class="main-nav" id="main-nav">
+            <script>
+              document.addEventListener("DOMContentLoaded", () => {
+                const burger = document.getElementById("burger-btn");
+                const nav = document.getElementById("main-nav");
+                if (burger && nav) {
+                  burger.addEventListener("click", () => {
+                    nav.classList.toggle("active");
+                  });
+                }
+              });
+            </script>
+            <a href="index.html">მთავარი</a>
+            <a href="hotels.html">სასტუმროები</a>
+            <a href="rooms.html">ოთახები</a>
+            <a href="booked.html">დაჯავშნილი</a>
+            <a href="help.html">დახმარება</a>
+          </nav>
+
+          <div class="autorization" id="auth-buttons">
+            <a href="login.html" class="btn">შესვლა</a>
+            <a href="register.html" class="btn btn-primary">რეგისტრაცია</a>
+          </div>
+          <div class="welcome" id="welcome-header" style="display: none">
+            <span id="welcome-name"></span>
+            <button id="logout-btn" class="btn logout">გასვლა</button>
+          </div>
+        </div>
+      </div>
+    </header>
 
     <section class="hero hero-resort">
       <div class="hero-overlay"></div>

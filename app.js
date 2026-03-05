@@ -1,232 +1,114 @@
-// const Api = "https://hotelbooking.stepprojects.ge/";
-
-// const API = {
-//   hotels: Api + "api/Hotels/GetAll",
-//   hotelById: (id) => Api + `api/Hotels/GetHotel/${id}`,
-//   cities: Api + "api/Hotels/GetCities",
-//   rooms: Api + "api/Rooms/GetAll",
-//   roomTypes: Api + "api/Rooms/GetRoomTypes",
-//   roomFilter: Api + "api/Rooms/GetFiltered",
-//   bookings: Api + "api/Booking",
-//   deleteBooking: (id) => Api + `api/Booking/${id}`,
-// };
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   init();
-// });
-
-// async function init() {
-//   const params = new URLSearchParams(window.location.search);
-//   const hotelId = params.get("hotelId");
-
-//   if (hotelId) {
-//     await getHotelRooms(hotelId);
-//   } else {
-//     await getHotels();
-//     await loadCities();
-//   }
-// }
-// //სასტუმროების ჩამოტვირთვა
-// async function getHotels() {
-//   try {
-//     const response = await fetch(API.hotels);
-//     const hotels = await response.json();
-//     renderHotels(hotels);
-//   } catch (error) {
-//     console.error("Error fetching hotels:", error);
-//   }
-// }
-
-// function renderHotels(hotels) {
-//   const container = document.getElementById("hotels-list");
-//   if (!container) return;
-
-//   container.innerHTML = "";
-
-//   hotels.forEach((hotel) => {
-//     container.innerHTML += `
-//       <div class="hotels-card">
-//         <img src="${hotel.featuredImage}" alt="${hotel.name}">
-//         <div class="hotels-card-content">
-//           <h3>${hotel.name}</h3>
-//           <p class="meta">${hotel.city}</p>
-//           <div class="hotel-actions">
-//             <a class="btn btn-primary"
-//                href="booking.html?hotelId=${hotel.id}">
-//                ნომრების ნახვა
-//             </a>
-//           </div>
-//         </div>
-//       </div>
-//     `;
-//   });
-// }
-// //ქალაქების ფილტრი
-// async function loadCities() {
-//   try {
-//     const response = await fetch(API.cities);
-//     const hotels = await response.json();
-
-//     const cities = [...new Set(hotels.map((h) => h.city))];
-
-//     const select = document.getElementById("city-filter");
-//     if (!select) return;
-
-//     cities.forEach((city) => {
-//       select.innerHTML += `<option value="${city}">${city}</option>`;
-//     });
-
-//     select.addEventListener("change", () => {
-//       filterByCity(select.value);
-//     });
-//   } catch (error) {
-//     console.error("Error loading cities:", error);
-//   }
-// }
-
-// async function filterByCity(city) {
-//   try {
-//     const response = await fetch(`${Api}api/Hotels/GetHotels?city=${city}`);
-//     const hotels = await response.json();
-//     renderHotels(hotels);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
-// //ოთახები
-// async function getHotelRooms(hotelId) {
-//   try {
-//     const response = await fetch(API.hotelById(hotelId));
-//     const hotel = await response.json();
-
-//     renderRooms(hotel.rooms, hotel.name);
-//   } catch (error) {
-//     console.error("Error fetching hotel rooms:", error);
-//   }
-// }
-
-// function renderRooms(rooms, hotelName) {
-//   const container = document.getElementById("rooms-list");
-//   if (!container) return;
-
-//   container.innerHTML = `<h2>${hotelName}</h2>`;
-
-//   rooms.forEach((room) => {
-//     container.innerHTML += `
-//       <div class="room-card">
-//         <img src="${room.images[0]?.source || ""}">
-//         <h3>${room.name}</h3>
-//         <p>ფასი: ${room.pricePerNight} ₾</p>
-//         <p>სტუმრები: ${room.maximumGuests}</p>
-//         <button onclick="goToBooking(${room.id}, ${room.pricePerNight})">
-//           დაჯავშნა
-//         </button>
-//       </div>
-//     `;
-//   });
-// }
-// //დაჯავშნის გვერდზე გადაყვანა
-// function goToBooking(roomId, price) {
-//   window.location.href = `room-details.html?roomId=${roomId}&price=${price}`;
-// }
-
-// function handleAuthUI() {
-//   const authDiv = document.getElementById("auth-buttons");
-//   const welcomeDiv = document.getElementById("welcome-header");
-//   const nameSpan = document.getElementById("welcome-name");
-//   const logoutBtn = document.getElementById("logout-btn");
-
-//   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-//   if (currentUser) {
-//     authDiv.style.display = "none";
-//     welcomeDiv.style.display = "flex";
-//     nameSpan.textContent = `გამარჯობა, ${currentUser.name}`;
-
-//     logoutBtn.addEventListener("click", () => {
-//       localStorage.removeItem("currentUser");
-//       window.location.reload();
-//     });
-//   } else {
-//     authDiv.style.display = "flex";
-//     welcomeDiv.style.display = "none";
-//   }
-// }
-
-// document.addEventListener("DOMContentLoaded", handleAuthUI);
-
-const BASE_URL = "https://hotelbooking.stepprojects.ge/api";
+const API_BASE = "https://hotelbooking.stepprojects.ge/api";
 
 let allHotels = [];
 
-document.addEventListener("DOMContentLoaded", () => {
-  init();
-  handleAuthUI();
-});
+console.log("✓ app.js loaded");
 
-async function init() {
-  await getHotels();
-  await loadCities();
+// =================================
+// 🔐 AUTHENTICATION UI HANDLER
+// =================================
+function handleAuthUI() {
+  console.log("🔐 handleAuthUI: Checking authentication status...");
+
+  const authDiv = document.getElementById("auth-buttons");
+  const welcomeDiv = document.getElementById("welcome-header");
+  const nameSpan = document.getElementById("welcome-name");
+  const logoutBtn = document.getElementById("logout-btn");
+
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  console.log("📦 currentUser from localStorage:", currentUser);
+
+  if (currentUser && currentUser.name) {
+    console.log(`✓ User logged in: ${currentUser.name}`);
+    if (authDiv) authDiv.style.display = "none";
+    if (welcomeDiv) welcomeDiv.style.display = "flex";
+    if (nameSpan) nameSpan.textContent = `გამარჯობა, ${currentUser.name}`;
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        console.log("🚪 Logging out user");
+        localStorage.removeItem("currentUser");
+        window.location.reload();
+      });
+    }
+  } else {
+    console.log("✗ No user logged in");
+    if (authDiv) authDiv.style.display = "flex";
+    if (welcomeDiv) welcomeDiv.style.display = "none";
+  }
 }
 
-/* ===========================
-   სასტუმროების ჩამოტვირთვა
-=========================== */
+// =================================
+// 🏨 HOTELS MANAGEMENT
+// =================================
 async function getHotels() {
   try {
-    const response = await fetch(`${BASE_URL}/Hotels/GetAll`);
+    console.log("🏨 Fetching hotels...");
+    const response = await fetch(`${API_BASE}/Hotels/GetAll`);
+    if (!response.ok) throw new Error("Hotels fetch failed");
+
     const hotels = await response.json();
+    console.log(`✓ Got ${hotels.length} hotels`);
 
     allHotels = hotels;
     renderHotels(hotels);
   } catch (error) {
-    console.error("Error fetching hotels:", error);
+    console.error("❌ Error fetching hotels:", error);
   }
 }
 
 function renderHotels(hotels) {
   const container = document.getElementById("hotels-list");
-  if (!container) return;
+  if (!container) {
+    console.warn("⚠️ hotels-list container not found");
+    return;
+  }
 
-  if (!hotels.length) {
+  console.log(`🎨 Rendering ${hotels.length} hotels`);
+  container.innerHTML = "";
+
+  if (!hotels || hotels.length === 0) {
     container.innerHTML = "<p>სასტუმროები ვერ მოიძებნა</p>";
     return;
   }
 
-  container.innerHTML = hotels
-    .map(
-      (hotel) => `
-    <div class="hotels-card">
-      <img src="${hotel.featuredImage}" alt="${hotel.name}">
-      <div class="hotels-card-content">
-        <h3>${hotel.name}</h3>
-        <p class="meta">${hotel.city}</p>
-        <div class="hotel-actions">
-          <a class="btn btn-primary"
-             href="rooms.html?hotelId=${hotel.id}">
-             ნომრების ნახვა
-          </a>
+  hotels.forEach((hotel) => {
+    container.innerHTML += `
+      <div class="hotels-card">
+        <img src="${hotel.featuredImage}" alt="${hotel.name}" />
+        <div class="hotels-card-content">
+          <h3>${hotel.name}</h3>
+          <p class="meta">${hotel.city}</p>
+          <div class="hotel-actions">
+            <a class="btn btn-primary" href="rooms.html?hotelId=${hotel.id}">
+              ნომრების ნახვა
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  `,
-    )
-    .join("");
+    `;
+  });
 }
 
-/* ===========================
-   ქალაქების ფილტრი
-=========================== */
+// =================================
+// 🏙️ CITIES FILTER
+// =================================
 async function loadCities() {
   try {
-    const response = await fetch(`${BASE_URL}/Hotels/GetCities`);
+    console.log("🏙️ Loading cities...");
+    const response = await fetch(`${API_BASE}/Hotels/GetCities`);
+    if (!response.ok) throw new Error("Cities fetch failed");
+
     const cities = await response.json();
+    console.log(`✓ Got ${cities.length} cities`);
 
     const select = document.getElementById("city-filter");
-    if (!select) return;
+    if (!select) {
+      console.warn("⚠️ city-filter select not found");
+      return;
+    }
 
-    select.innerHTML = `<option value="">ყველა ქალაქი</option>`;
-
+    select.innerHTML = '<option value="">ყველა ქალაქი</option>';
     cities.forEach((city) => {
       select.innerHTML += `<option value="${city}">${city}</option>`;
     });
@@ -235,206 +117,291 @@ async function loadCities() {
       filterByCity(e.target.value);
     });
   } catch (error) {
-    console.error("Error loading cities:", error);
+    console.error("❌ Error loading cities:", error);
   }
 }
 
 function filterByCity(city) {
+  console.log(`📍 Filter by city: ${city || "all"}`);
   if (!city) {
     renderHotels(allHotels);
     return;
   }
 
   const filtered = allHotels.filter((h) => h.city === city);
+  console.log(`✓ Found ${filtered.length} hotels in ${city}`);
   renderHotels(filtered);
 }
 
-/* ===========================
-   ავტორიზაციის UI
-=========================== */
-function handleAuthUI() {
-  const authDiv = document.getElementById("auth-buttons");
-  const welcomeDiv = document.getElementById("welcome-header");
-  const nameSpan = document.getElementById("welcome-name");
-  const logoutBtn = document.getElementById("logout-btn");
+// =================================
+// 🔎 GET ALL ROOMS FOR HOME PAGE
+// =================================
+async function getAllRooms() {
+  try {
+    console.log("🔎 getAllRooms: Fetching all rooms from all hotels...");
+    const hotelsRes = await fetch(`${API_BASE}/Hotels/GetAll`);
+    const hotels = await hotelsRes.json();
+    console.log(`✓ Hotels: ${hotels.length}`);
 
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    let allRooms = [];
 
-  if (currentUser) {
-    authDiv.style.display = "none";
-    welcomeDiv.style.display = "flex";
-    nameSpan.textContent = `გამარჯობა, ${currentUser.name}`;
+    for (const hotel of hotels) {
+      const roomsRes = await fetch(`${API_BASE}/Rooms/GetRoom/${hotel.id}`);
+      if (roomsRes.ok) {
+        const rooms = await roomsRes.json();
+        const roomsArray = Array.isArray(rooms) ? rooms : [rooms];
 
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("currentUser");
-      window.location.reload();
-    });
-  } else {
-    authDiv.style.display = "flex";
-    welcomeDiv.style.display = "none";
+        roomsArray.forEach((room) => {
+          room.hotelName = hotel.name;
+          room.hotelId = hotel.id;
+          room.hotelCity = hotel.city;
+          allRooms.push(room);
+        });
+        console.log(`  └─ ${hotel.name}: ${roomsArray.length} rooms`);
+      }
+    }
+
+    console.log(`✓ Total rooms: ${allRooms.length}`);
+    return allRooms;
+  } catch (err) {
+    console.error("❌ getAllRooms error:", err);
+    return [];
   }
 }
 
+// =================================
+// 💎 TOP 3 EXPENSIVE ROOMS
+// =================================
+async function loadTopExpensiveRooms() {
+  try {
+    console.log("💎 Loading top 3 expensive rooms...");
+    const allRooms = await getAllRooms();
 
-//ძებნისთვის პირველი ფორმიდან 
-document.addEventListener("DOMContentLoaded", () => {
-  const API_URL = "https://hotelbooking.stepprojects.ge/api";
+    if (allRooms.length === 0) {
+      console.warn("⚠️ No rooms found");
+      return;
+    }
 
-  const searchForm = document.getElementById("search-form");
-  const cityInput = document.getElementById("city");
-  const checkInInput = document.getElementById("checkin");
-  const checkOutInput = document.getElementById("checkout");
-  const guestsSelect = document.getElementById("guests");
+    const sorted = [...allRooms].sort(
+      (a, b) => b.pricePerNight - a.pricePerNight,
+    );
+    const top3 = sorted.slice(0, 3);
+    console.log(
+      `✓ Top 3: ${top3.map((r) => `${r.name}(${r.pricePerNight}₾)`).join(", ")}`,
+    );
 
-  const featuredGrid = document.getElementById("featured-grid");
-  const cardsGrid = document.querySelector(".cards-grid");
-
-  const newsletterForm = document.getElementById("newsletter");
-
-  function formatDateToISO(dateStr) {
-    if (!dateStr) return null;
-    const [year, month, day] = dateStr.split("-");
-    const date = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
-    return date.toISOString();
-  }
-
-  // =========================
-  // 🔎 HERO FORM SEARCH
-  // =========================
-  if (searchForm) {
-    searchForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const city = cityInput.value.trim();
-      const checkIn = formatDateToISO(checkInInput.value);
-      const checkOut = formatDateToISO(checkOutInput.value);
-      const guests = parseInt(guestsSelect.value);
-
-      try {
-        const res = await fetch(`${API_URL}/Rooms/GetAll`);
-        let rooms = await res.json();
-
-        // ფილტრი ქალაქით
-        if (city) {
-          rooms = rooms.filter(room =>
-            room.hotel?.city?.toLowerCase().includes(city.toLowerCase())
-          );
-        }
-
-        // ფილტრი სტუმრებით
-        rooms = rooms.filter(room => room.maximumGuests >= guests);
-
-        if (!rooms.length) {
-          Swal.fire("შედეგი", "ოთახები ვერ მოიძებნა", "info");
-          return;
-        }
-
-        // გადავდივართ rooms.html-ზე და ვაძლევთ city-ს
-        window.location.href = `rooms.html?city=${city}`;
-
-      } catch (err) {
-        Swal.fire("შეცდომა", err.message, "error");
-      }
-    });
-  }
-
-  // =========================
-  // 💎 ყველაზე ძვირიანი 3 ოთახი
-  // =========================
-  async function loadTopExpensiveRooms() {
-    const res = await fetch(`${API_URL}/Rooms/GetAll`);
-    let rooms = await res.json();
-
-    rooms.sort((a, b) => b.pricePerNight - a.pricePerNight);
-    const top3 = rooms.slice(0, 3);
+    const featuredGrid = document.getElementById("featured-grid");
+    if (!featuredGrid) {
+      console.warn("⚠️ featured-grid not found");
+      return;
+    }
 
     const cards = featuredGrid.querySelectorAll(".hotel-card");
+    if (cards.length === 0) {
+      console.warn("⚠️ No .hotel-card elements found in featured-grid");
+      return;
+    }
 
     top3.forEach((room, index) => {
       const card = cards[index];
-      if (!card) return;
+      if (!card) {
+        console.warn(`⚠️ Card ${index} not found`);
+        return;
+      }
 
-      card.querySelector("img").src =
-        room.images?.[0]?.source || "placeholder.png";
+      const img = card.querySelector("img");
+      const h4 = card.querySelector("h4");
+      const meta = card.querySelector(".meta");
+      const btn = card.querySelector(".btn-primary");
 
-      card.querySelector("h4").textContent = room.name;
+      if (img)
+        img.src = room.images?.[0]?.source || "https://picsum.photos/400/300";
+      if (h4) h4.textContent = room.name;
+      if (meta)
+        meta.textContent = `${room.pricePerNight} ₾ • ${room.maximumGuests} სტუმარი`;
+      if (btn) btn.href = `booking.html?roomId=${room.id}`;
 
-      card.querySelector(".meta").textContent =
-        `${room.pricePerNight} ₾ • ${room.maximumGuests} სტუმარი`;
-
-      card.querySelector(".btn-primary").href =
-        `rooms.html?roomId=${room.id}`;
+      console.log(`  ✓ Card ${index + 1}: ${room.name}`);
     });
+  } catch (err) {
+    console.error("❌ loadTopExpensiveRooms error:", err);
   }
+}
 
-  // =========================
-  // 🏨 პირველი 3 ოთახი
-  // =========================
-  async function loadFirstThreeRooms() {
-    const res = await fetch(`${API_URL}/Rooms/GetAll`);
-    const rooms = await res.json();
+// =================================
+// 🏨 FIRST 3 ROOMS
+// =================================
+async function loadFirstThreeRooms() {
+  try {
+    console.log("🏨 Loading first 3 rooms...");
+    const allRooms = await getAllRooms();
 
-    const first3 = rooms.slice(0, 3);
+    if (allRooms.length === 0) {
+      console.warn("⚠️ No rooms found");
+      return;
+    }
+
+    const first3 = allRooms.slice(0, 3);
+    console.log(`✓ First 3: ${first3.map((r) => r.name).join(", ")}`);
+
+    const cardsGrid = document.querySelector(".cards-grid");
+    if (!cardsGrid) {
+      console.warn("⚠️ .cards-grid not found");
+      return;
+    }
+
     const cards = cardsGrid.querySelectorAll(".card");
+    if (cards.length === 0) {
+      console.warn("⚠️ No .card elements found in cards-grid");
+      return;
+    }
 
     first3.forEach((room, index) => {
       const card = cards[index];
-      if (!card) return;
+      if (!card) {
+        console.warn(`⚠️ Card ${index} not found`);
+        return;
+      }
 
-      card.querySelector("img").src =
-        room.images?.[0]?.source || "placeholder.png";
+      const img = card.querySelector("img");
+      const h3 = card.querySelector("h3");
+      const meta = card.querySelector(".meta");
+      const btn = card.querySelector(".btn-primary");
 
-      card.querySelector("h3").textContent = room.name;
+      if (img)
+        img.src = room.images?.[0]?.source || "https://picsum.photos/400/300";
+      if (h3) h3.textContent = room.name;
+      if (meta)
+        meta.textContent = `${room.pricePerNight} ₾ • ${room.maximumGuests} სტუმარი`;
+      if (btn) btn.href = `booking.html?roomId=${room.id}`;
 
-      card.querySelector(".meta").textContent =
-        `${room.pricePerNight} ₾ • ${room.maximumGuests} სტუმარი`;
-
-      card.querySelector(".btn-primary").href =
-        `rooms.html?roomId=${room.id}`;
+      console.log(`  ✓ Card ${index + 1}: ${room.name}`);
     });
+  } catch (err) {
+    console.error("❌ loadFirstThreeRooms error:", err);
+  }
+}
+
+// =================================
+// 🔎 HERO SEARCH FORM
+// =================================
+function setupSearchForm() {
+  const searchForm = document.getElementById("search-form");
+  if (!searchForm) {
+    console.warn("⚠️ search-form not found");
+    return;
   }
 
-  // =========================
-  // 💬 კომენტარები
-  // =========================
-  if (newsletterForm) {
-    const input = newsletterForm.querySelector("input");
+  console.log("🔎 Setting up search form...");
 
-    function loadComments() {
-      const comments =
-        JSON.parse(localStorage.getItem("comments")) || [];
+  searchForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    console.log("🔎 Search form submitted");
 
-      const section = document.querySelector(".test-grid");
+    const cityInput = document.getElementById("city");
+    const checkInInput = document.getElementById("checkin");
+    const checkOutInput = document.getElementById("checkout");
+    const guestsSelect = document.getElementById("guests");
 
-      comments.forEach(text => {
-        const block = document.createElement("blockquote");
-        block.textContent = `"${text}"`;
-        section.appendChild(block);
-      });
+    const city = cityInput?.value.trim() || "";
+    const guests = parseInt(guestsSelect?.value || 1);
+
+    console.log(`  City: ${city || "any"}, Guests: ${guests}`);
+
+    try {
+      const allRooms = await getAllRooms();
+      let filtered = allRooms;
+
+      if (city) {
+        filtered = filtered.filter((r) =>
+          r.hotelCity?.toLowerCase().includes(city.toLowerCase()),
+        );
+      }
+
+      filtered = filtered.filter((r) => r.maximumGuests >= guests);
+
+      console.log(`  Results: ${filtered.length} rooms`);
+
+      if (filtered.length === 0) {
+        alert("ოთახები ვერ მოიძებნა");
+        return;
+      }
+
+      window.location.href = `rooms.html?city=${encodeURIComponent(city)}`;
+    } catch (err) {
+      console.error("❌ Search error:", err);
+      alert("ძებნის შეცდომა");
     }
+  });
+}
 
-    newsletterForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const text = input.value.trim();
-      if (!text) return;
-
-      const comments =
-        JSON.parse(localStorage.getItem("comments")) || [];
-
-      comments.push(text);
-      localStorage.setItem("comments", JSON.stringify(comments));
-
-      input.value = "";
-      loadComments();
-    });
-
-    loadComments();
+// =================================
+// 💬 NEWSLETTER
+// =================================
+function setupNewsletter() {
+  const form = document.getElementById("newsletter");
+  if (!form) {
+    console.warn("⚠️ newsletter form not found");
+    return;
   }
 
-  // =========================
-  // INITIAL LOAD
-  // =========================
-  loadTopExpensiveRooms();
-  loadFirstThreeRooms();
+  console.log("💬 Setting up newsletter...");
+
+  const input = form.querySelector("input");
+  if (!input) return;
+
+  function loadComments() {
+    const comments = JSON.parse(localStorage.getItem("comments")) || [];
+    const section = document.querySelector(".test-grid");
+    if (!section) return;
+
+    section.innerHTML = "";
+    comments.forEach((text) => {
+      const block = document.createElement("blockquote");
+      block.textContent = `"${text}"`;
+      section.appendChild(block);
+    });
+  }
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+
+    const comments = JSON.parse(localStorage.getItem("comments")) || [];
+    comments.push(text);
+    localStorage.setItem("comments", JSON.stringify(comments));
+
+    input.value = "";
+    loadComments();
+  });
+
+  loadComments();
+}
+
+// =================================
+// 📍 MAIN INITIALIZATION
+// =================================
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("📍 DOMContentLoaded: Starting app initialization");
+
+  // Always handle auth UI FIRST
+  handleAuthUI();
+
+  // Check if we're on a hotel page
+  const urlParams = new URLSearchParams(window.location.search);
+  const hotelId = urlParams.get("hotelId");
+
+  if (!hotelId) {
+    // Home page setup
+    console.log("📍 Home page detected, loading home features");
+    getHotels();
+    loadCities();
+    loadTopExpensiveRooms();
+    loadFirstThreeRooms();
+    setupSearchForm();
+    setupNewsletter();
+  }
+
+  console.log("✓ App initialization complete");
 });

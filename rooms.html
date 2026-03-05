@@ -19,7 +19,23 @@
       <div class="flex">
         <div class="container header-inner">
           <a class="logo" href="index.html">HotelBook</a>
-          <nav class="main-nav">
+          <button class="burger" id="burger-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <nav class="main-nav" id="main-nav">
+            <script>
+              document.addEventListener("DOMContentLoaded", () => {
+                const burger = document.getElementById("burger-btn");
+                const nav = document.getElementById("main-nav");
+                if (burger && nav) {
+                  burger.addEventListener("click", () => {
+                    nav.classList.toggle("active");
+                  });
+                }
+              });
+            </script>
             <a href="index.html">მთავარი</a>
             <a href="hotels.html">სასტუმროები</a>
             <a href="rooms.html">ოთახები</a>
@@ -78,6 +94,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="app.js"></script>
     <script src="rooms.js"></script>
     <footer class="site-footer">
       <div class="container">
