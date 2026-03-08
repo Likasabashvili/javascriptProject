@@ -706,11 +706,6 @@ button {
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
-@media screen and (max-width: 865px) {
-  a.btn.btn-primary {
-    height: 50px;
-  }
-}
 @media screen and (max-width: 845px) {
   .container.hero-inner {
     display: flex;
@@ -1424,5 +1419,5 @@ input#city, input#checkin, input#checkout, select#guests {
   input {
     width: 110px;
   }
-  
+
 }
