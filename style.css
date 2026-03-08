@@ -1405,3 +1405,15 @@ button {
   }
   
 }
+@media screen and (max-width: 354px) {
+  input {
+   width: 150px;
+  }
+.btn {
+  padding: 6px 8px;
+  font-size: 8px;
+}
+input#city, input#checkin, input#checkout, select#guests {
+  width: 97%;
+}
+}
