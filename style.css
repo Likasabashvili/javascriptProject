@@ -1417,3 +1417,12 @@ input#city, input#checkin, input#checkout, select#guests {
   width: 97%;
 }
 }
+@media screen and (max-width:294px) {
+  h3 {
+    font-size: 8px;
+  }
+  input {
+    width: 110px;
+  }
+  
+}
