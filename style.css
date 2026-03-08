@@ -1394,3 +1394,14 @@ button {
     padding: 3px 4px;
   }
 }
+@media  screen and (max-width: 843px) {
+  .hero-left h1 {
+    font-size: 1.4rem;
+  }
+}
+@media  screen and (max-width: 422px) {
+  h3 {
+    font-size: 12px;
+  }
+  
+}
